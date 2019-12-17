@@ -3,6 +3,7 @@
 
 == Research Interests
 . Reinforcement learning theory.
+. Machine learning theory.
 . Convex and nonconvex optimization.
 
 == Publication & Preprints
@@ -11,3 +12,4 @@
 - [https://arxiv.org/abs/1905.06507 The Search direction Correction makes first-order methods faster]\n Yifei Wang, *Zeyu Jia*, Zaiwen Wen\n In submission
 
 == Talks and Presentations
+- *Provably Efficient Algorithms in Reinforcement Learning*\n Peking University RL Seminar, Nov 2019, Beijing, China
