@@ -11,4 +11,4 @@ Our Gifts to Each Other:
 
 <br/>
 
-<p align=center><img src="../../../images/IMG_4908.JPG" width="600"/></p>
+<p align="center"><img src="../../../images/IMG_4908.JPG" width="600"/></p>
