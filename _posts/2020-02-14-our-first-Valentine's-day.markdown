@@ -7,7 +7,8 @@ Though not metting each other, our hearts bind together.
 <br/>
 Our Gifts to Each Other:
 
-<div align=center><img src="../../../images/IMG_2897.JPG" width="600"/></div>
+<p align="center"><img src="../../../images/IMG_2897.JPG" width="600"/></p>
+
 <br/>
 
 <div align=center><img src="../../../images/IMG_4908.JPG" width="600"/></div>
