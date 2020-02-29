@@ -36,6 +36,12 @@ date:   2020-02-25
 * Flowerpot Island
 * etc
 
+#### [Blue Mountain Resort](https://bluemountain.ca) (2-3 days)
+
+*From Toronto to Blue Mountain Reort*: about 2-hour drive, 100 miles
+
+* Skiing (Day pass may open until 3.29, Night pass may open until 3.22)
+
 #### [University of Waterloo](https://uwaterloo.ca/) (1 days)
 
 From Toronto to University of Waterloo: about 1.5-hour drive, 80 miles
