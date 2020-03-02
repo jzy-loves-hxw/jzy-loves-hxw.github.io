@@ -8,7 +8,19 @@ date:   2020-02-25
 
 #### Review of girlfriend's final-term (3-4 days)
 
-#### Toronto City (2-3 days)
+#### [Blue Mountain Resort](https://bluemountain.ca) (March 21st to March 27th)
+
+*Hotel:* 
+
+*From Toronto to Blue Mountain Resort*: about 2-hour drive, 100 miles
+
+* Skiing (Day pass may open until 3.29, Night pass may open until 3.22)
+
+#### Toronto City (March 27th to April 5th)
+
+*Airbnb:* https://www.airbnb.com/rooms/38156459?adults=2&check_in=2020-03-26&check_out=2020-04-05&source_impression_id=p3_1583077665_cCK8kVrnfQ%2F6xgN1
+
+**Spots: **
 
 * [Casa Loma](https://casaloma.ca/)
 * [CN Tower](https://www.cntower.ca/intro.html)
@@ -25,30 +37,13 @@ date:   2020-02-25
 
 *Toronto Premium Outlets*: 13850 Steeles Ave W, Halton Hills, ON L7G 0J1, Canada
 
-#### [Bruce Peninsula](http://www.thebrucepeninsula.com/) (3-4 days)
-
-[*Introduction*](https://www.pc.gc.ca/en/pn-np/on/bruce)
-
-*From Toronto to Bruce Peninsula National Park*: about 3.5-hour drive, 180 miles
-
-* Tobermory
-* The Grotto
-* Flowerpot Island
-* etc
-
-#### [Blue Mountain Resort](https://bluemountain.ca) (2-3 days)
-
-*From Toronto to Blue Mountain Reort*: about 2-hour drive, 100 miles
-
-* Skiing (Day pass may open until 3.29, Night pass may open until 3.22)
-
-#### [University of Waterloo](https://uwaterloo.ca/) (1 days)
-
-From Toronto to University of Waterloo: about 1.5-hour drive, 80 miles
-
 #### University of Toronto (To be planned)
 
 
+
+#### Flight (Toronto to New York):
+
+AC702 (8:05 am - 9:30 am)
 
 ## Two/Three Days around NYC (April 5th to April 7th)
 
@@ -65,8 +60,6 @@ From Toronto to University of Waterloo: about 1.5-hour drive, 80 miles
 * [Metropolitan Museum of Art](www.metmuseum.org)
 * Wallstreet
 * etc
-
-
 
 ## Campus Visit
 
