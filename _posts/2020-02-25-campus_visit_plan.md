@@ -1,9 +1,12 @@
 ---
 layout: post
-title:  "Campus Visit Plan"
+title:  "Campus Visit -> Campus Visit/Honeymoon -> Cancelled"
 date:   2020-02-25
-published: false
+published: true
 ---
+## <span style="color:blue">*To Be Finished in the Future*</span>
+
+
 
 ## Two Weeks around Toronto (March 21st to April 5th)
 
