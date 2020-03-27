@@ -5,7 +5,7 @@ date:   2020-03-27
 published: true
 ---
 
-<p align="center"><img src="../../../images/2020-03-27/IMG_5076.JPG" width="500"/></p>
+<p align="center"><img src="../../../images/2020-03-27/IMG_5076.jpeg" width="500"/></p>
 
 Hello
 
@@ -20,5 +20,5 @@ is
 <p align="center"><img src="../../../images/2020-03-27/WechatIMG17985.jpeg" width="500"/></p>
 
 <center class="half">
-  <img src="../../../images/2020-03-27/IMG_5076.JPG" height="300"/><img src="../../../images/2020-03-27/WechatIMG17985.jpeg" height="300"/>
+  <img src="../../../images/2020-03-27/IMG_5076.jpeg" height="300"/><img src="../../../images/2020-03-27/WechatIMG17985.jpeg" height="300"/>
 </center>
