@@ -16,7 +16,7 @@ Our first photo after being together:
 
 <br/>
 
-感谢亲爱的送给我的贴心的礼物，再次附赠上一首三行情诗: <br/>
+感谢亲爱的送给我的贴心的礼物，再附赠上一首三行情诗: <br/>
 It is the first flower sent by you to a boy; <br/>
 It is also the first flower received by me from a girl; <br/>
 It is the gift at our first meet after being together  ~ love you forever ❤️ <br/>
