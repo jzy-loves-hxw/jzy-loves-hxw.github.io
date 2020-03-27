@@ -2,6 +2,7 @@
 layout: post
 title:  "Campus Visit Plan"
 date:   2020-02-25
+published: false
 ---
 
 ## Two Weeks around Toronto (March 21st to April 5th)
