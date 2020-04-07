@@ -1,0 +1,12 @@
+I"ú<p>Mark image size: 440*165</p>
+
+<div id="796ce95c-8ea6-4cba-9d4b-7d17648f963c" style="width:600px;height:400px;"></div>
+<script type="text/javascript">
+  jekyllMaps.register(
+    '796ce95c-8ea6-4cba-9d4b-7d17648f963c',
+    [{"latitude":39.969762,"longitude":116.318739,"title":"Our First Date!","icon":null,"url":"/2019/10/20/our-first-date.html","url_text":null,"image":"","popup_html":""}],
+    {"baseUrl":"","useCluster":true,"showMarker":true,"showMarkerPopup":true,"markerIcon":null}
+  );
+</script>
+
+:ET
