@@ -36,6 +36,7 @@ theme: minima
 #theme: jekyll-theme-minimal
 plugins:
  - jekyll-feed
+ - jekyll-maps
 
 gems:
  - jekyll-maps
