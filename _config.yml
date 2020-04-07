@@ -38,7 +38,12 @@ plugins:
  - jekyll-feed
 
 gems:
+ - jekyll-maps
  - jemoji
+
+maps:
+  google:
+    api_key: AIzaSyDQP0HvzRE9eSgZDliUmbI8oGII-tMAfdo
 
 # Exclude from processing.
 # The following items will not be processed, by default.
