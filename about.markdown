@@ -7,4 +7,4 @@ Mark image size: 440*165
 
 
 
- google_map src="_posts/"
+{% google_map src="_posts/"%}
