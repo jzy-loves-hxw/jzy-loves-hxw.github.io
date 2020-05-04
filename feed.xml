@@ -1,10 +1,228 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-03T16:41:14+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Love Stories between Jason Jia and Hayley Hu</title><subtitle>To mark our stories, moments and memories.</subtitle><entry><title type="html">100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天</title><link href="http://localhost:4000/2020/04/27/100days.html" rel="alternate" type="text/html" title="100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天" /><published>2020-04-27T00:00:00+08:00</published><updated>2020-04-27T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/27/100days</id><content type="html" xml:base="http://localhost:4000/2020/04/27/100days.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1dES9EQUIZt0HUb5Z2xWuuKPtt_NuomhA?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+<script type='text/javascript'>
+  /* global google */
+/* global MarkerClusterer */
+// eslint-disable-next-line no-unused-vars
+var jekyllMaps = (function() {
+  'use strict'
+  var clusterSettings = {}
+  var clusterReady = false
+  var mapReady = false
+  var options = {}
+  var data = []
+  var maps = []
 
-&lt;h4 id=&quot;今天的故事太多也太甜啦接下来几天慢慢写&quot;&gt;&lt;span style=&quot;color:blue&quot;&gt;今天的故事太多也太甜啦，接下来几天慢慢写～&lt;/span&gt;&lt;/h4&gt;
+  return {
+    initializeMap: initializeMap,
+    initializeCluster: initializeCluster,
+    register: register
+  }
 
-&lt;p&gt;来让小可爱挑一下，Jason的感情发展曲线是下面的哪一个呢&lt;/p&gt;
+  /**
+   * Setup Google Maps options and call renderer.
+   */
+  function initializeMap() {
+    options = {
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      center: new google.maps.LatLng(0, 0)
+    }
+    mapReady = true
+    render()
+  }
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/problem.jpeg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-27/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-27/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">三个月零一天后的约会——重游西山森林公园</title><link href="http://localhost:4000/2020/04/19/xishan.html" rel="alternate" type="text/html" title="三个月零一天后的约会——重游西山森林公园" /><published>2020-04-19T00:00:00+08:00</published><updated>2020-04-19T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/19/xishan</id><content type="html" xml:base="http://localhost:4000/2020/04/19/xishan.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1dnHjHv76772MV8taxrtjbXgM1NbuZjkP?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+  /**
+   * Register map data to be rendered once Google Maps API is loaded.
+   *
+   * @param string id
+   * @param Array locations
+   * @param Object settings
+   */
+  function register(id, locations, options) {
+    data.push({ id: id, locations: locations, options: options })
+    render()
+  }
+
+  /**
+   * Render maps data if Google Maps API is loaded.
+   */
+  function render() {
+    if (!mapReady) return
+
+    while (data.length > 0) {
+      var item = data.pop()
+      var bounds = new google.maps.LatLngBounds()
+      var mapOptions = Object.assign({}, options, item.options)
+      var map = new google.maps.Map(
+        document.getElementById(item.id),
+        mapOptions
+      )
+      var infoWindow = new google.maps.InfoWindow()
+      var markers = item.locations.map(createMarker)
+
+      map.fitBounds(bounds)
+      google.maps.event.addListenerOnce(map, 'idle', function() {
+        if (this.customZoom) this.setZoom(this.customZoom)
+      })
+      if (mapOptions.useCluster) {
+        maps.push({ map: map, markers: markers })
+        processCluster()
+      }
+    }
+
+    function createMarker(location) {
+      var position = new google.maps.LatLng(
+        location.latitude,
+        location.longitude
+      )
+      bounds.extend(position)
+      if (!mapOptions.showMarker) return false
+
+      var marker = new google.maps.Marker({
+        position: position,
+        title: location.title,
+        image: location.image,
+        popup_html: location.popup_html,
+        icon: location.icon || mapOptions.markerIcon,
+        url: markerUrl(mapOptions.baseUrl, location.url),
+        url_text: location.url_text,
+        map: map
+      })
+      if (mapOptions.showMarkerPopup) marker.addListener('click', markerPopup)
+
+      return marker
+    }
+
+    function markerUrl(baseUrl, url) {
+      if (/^(https?|\/\/)/.test(url)) return url
+
+      return url.length > 0 ? baseUrl + url : ''
+    }
+
+    function markerPopup() {
+      var content = '<div class="map-info-window"><h5>' + this.title + '</h5>'
+      if (this.popup_html.length > 0) {
+        content += this.popup_html
+      }
+      else {
+        var imageTag =
+          this.image.length > 0 &&
+          '<img src="' + this.image + '" alt="' + this.title + '"/>'
+        if (this.url.length > 0) {
+          var linkContent = imageTag || this.url_text || 'View'
+          content += '<a href="' + this.url + '">' + linkContent + '</a>'
+        } else if (imageTag) {
+          content += imageTag
+        }
+      }
+      content += '</div>'
+      infoWindow.setContent(content)
+      infoWindow.open(map, this)
+    }
+  }
+
+  function initializeCluster(settings) {
+    clusterReady = true
+    clusterSettings = settings || {}
+    processCluster()
+  }
+
+  function processCluster() {
+    if (!clusterReady) return
+
+    while (maps.length > 0) {
+      var obj = maps.pop()
+      // eslint-disable-next-line no-new
+      new MarkerClusterer(obj.map, obj.markers, {
+        gridSize: clusterSettings.grid_size || 25,
+        imagePath:
+          'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'
+      })
+    }
+  }
+})()
+/* Object.assign polyfill */
+if (typeof Object.assign !== 'function') {
+  Object.assign = function(target) {
+    'use strict'
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object')
+    }
+
+    target = Object(target)
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index]
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key]
+          }
+        }
+      }
+    }
+    return target
+  }
+}
+
+</script>
+<script async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDQP0HvzRE9eSgZDliUmbI8oGII-tMAfdo&callback=jekyllMaps.initializeMap'></script>
+
+<script async defer src='https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer.js'
+        onload='jekyllMaps.initializeCluster({})'></script>
+
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-04T17:30:59+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Love Stories between Jason Jia and Hayley Hu</title><subtitle>To mark our stories, moments and memories.</subtitle><entry><title type="html">100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天</title><link href="http://localhost:4000/2020/04/27/100days.html" rel="alternate" type="text/html" title="100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天" /><published>2020-04-27T00:00:00+08:00</published><updated>2020-04-27T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/27/100days</id><content type="html" xml:base="http://localhost:4000/2020/04/27/100days.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/11tiLJTG2z-3287N1mOpai_t85t6nTnny?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Jason：在post的最前面，先让我的小可爱Hayley挑一下，我的感情发展曲线是下面的哪一个呢～&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/problem.jpeg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;今天的故事太多也太甜啦，我们在一起，哪里都很浪漫～&lt;/p&gt;
+
+&lt;p&gt;在下面的地图上mark一下我们一天的行程⬇️&lt;/p&gt;
+&lt;div id=&quot;8c443c5c-b3df-4c36-846a-34a5d89c7ea3&quot; style=&quot;width:600px;height:400px;&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+  jekyllMaps.register(
+    '8c443c5c-b3df-4c36-846a-34a5d89c7ea3',
+    [{&quot;latitude&quot;:39.974278,&quot;longitude&quot;:116.312552,&quot;title&quot;:&quot;Noon: 人大附中&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#人大附中&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;../../../images/2020-04-27/rdfz.jpg&quot;,&quot;popup_html&quot;:&quot;&quot;},{&quot;latitude&quot;:39.965835,&quot;longitude&quot;:116.323512,&quot;title&quot;:&quot;Afternoon: 微笑时刻&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#微笑时刻&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;../../../images/2020-04-27/smile-time.jpg&quot;,&quot;popup_html&quot;:&quot;&quot;},{&quot;latitude&quot;:39.992851,&quot;longitude&quot;:116.339663,&quot;title&quot;:&quot;Dinner time: 五道口&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#五道口&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;../../../images/2020-04-27/wudaokou.jpg&quot;,&quot;popup_html&quot;:&quot;&quot;},{&quot;latitude&quot;:39.980248,&quot;longitude&quot;:116.314183,&quot;title&quot;:&quot;Evening: 食宝街&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#食宝街&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;,&quot;popup_html&quot;:&quot;&quot;}],
+    {&quot;baseUrl&quot;:&quot;&quot;,&quot;useCluster&quot;:false,&quot;showMarker&quot;:true,&quot;showMarkerPopup&quot;:true,&quot;markerIcon&quot;:null}
+  );
+&lt;/script&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;人大附中&quot;&gt;人大附中&lt;/h3&gt;
+&lt;p&gt;吃完午饭来到人大附中，我们在高三开学的第一天来到RDFZ的门口。都穿上校服，让Hayley带着Jason重新 感受了一下高中谈恋爱的生活～&lt;/p&gt;
+
+&lt;p&gt;Jason：收到小可爱的100天礼物：获奖的横幅，超级爱你。这样我既穿着校服谈恋爱，也收到啦获奖后的横幅，高中生活顿时感觉圆满啦❤️&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/rdfz1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/rdfz2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/rdfz3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;微笑时刻&quot;&gt;微笑时刻&lt;/h3&gt;
+&lt;p&gt;不多说啦，直接摆上图就是啦，顺便Jason要狠狠表扬一下他的小可爱的p图水平～&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-8.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-9.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-10.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-11.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;五道口&quot;&gt;五道口&lt;/h3&gt;
+&lt;p&gt;晚上我们来到五道口的局气餐馆吃晚饭，看到有意思的盘子便留下了下面的照片～&lt;/p&gt;
+
+&lt;p&gt;Hayley还说这个盘子上写的怎么这么符合hhh（Jason也莫名觉得有道理）&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/wudaokou1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/wudaokou2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;食宝街&quot;&gt;食宝街&lt;/h3&gt;
+&lt;p&gt;晚上我们来到食宝街的上方，Hayley完成了自由人登山队培训的第一次训练&lt;/p&gt;
+
+&lt;p&gt;由于没有当晚的照片，就用第二天”小可爱’s redemption”来当作配图吧（Jason想说，他的小可爱Hayley真是太可爱啦）&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/shibaojie.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-27/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-27/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">三个月零一天后的约会——重游西山森林公园</title><link href="http://localhost:4000/2020/04/19/xishan.html" rel="alternate" type="text/html" title="三个月零一天后的约会——重游西山森林公园" /><published>2020-04-19T00:00:00+08:00</published><updated>2020-04-19T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/19/xishan</id><content type="html" xml:base="http://localhost:4000/2020/04/19/xishan.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1LiG2VEEf9y0Nw2xB8IZ5lxg-NWsBovZr?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;三个月零一天前，我们在一起当天的约会，发生在浪漫的西山森林公园&lt;br /&gt;
 三个月零一天后，我们带着对过去的怀念、当前的快乐、未来的憧憬，再次来到这里，一起来explore浪漫的生活～&lt;/p&gt;
@@ -15,7 +233,7 @@
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-19/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-19/5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-19/6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-19/7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-19/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-19/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dating at SportMonster</title><link href="http://localhost:4000/2020/04/17/sportmonster.html" rel="alternate" type="text/html" title="Dating at SportMonster" /><published>2020-04-17T00:00:00+08:00</published><updated>2020-04-17T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/17/sportmonster</id><content type="html" xml:base="http://localhost:4000/2020/04/17/sportmonster.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1_qhbuqQveij_pUegeUrWO5CTCd8hk6Bq?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-19/7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-19/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-19/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dating at SportMonster</title><link href="http://localhost:4000/2020/04/17/sportmonster.html" rel="alternate" type="text/html" title="Dating at SportMonster" /><published>2020-04-17T00:00:00+08:00</published><updated>2020-04-17T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/17/sportmonster</id><content type="html" xml:base="http://localhost:4000/2020/04/17/sportmonster.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1tkwk0jf7o-tW0zo9ixBRZri1mRh83aZq?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Hayley带着Jason体验生活的故事之一～&lt;/p&gt;
 
@@ -25,7 +243,7 @@
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-17/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-17/5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-17/6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-17/7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-17/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-17/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Hiking at 凤凰岭 —— By Hayley</title><link href="http://localhost:4000/2020/04/12/fenghuangling.html" rel="alternate" type="text/html" title="Hiking at 凤凰岭 ------ By Hayley" /><published>2020-04-12T00:00:00+08:00</published><updated>2020-04-12T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/12/fenghuangling</id><content type="html" xml:base="http://localhost:4000/2020/04/12/fenghuangling.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1b68kWW53Eagql-4kJtlSxu4ywglZUEyC?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-17/7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-17/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-17/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Hiking at 凤凰岭 —— By Hayley</title><link href="http://localhost:4000/2020/04/12/fenghuangling.html" rel="alternate" type="text/html" title="Hiking at 凤凰岭 ------ By Hayley" /><published>2020-04-12T00:00:00+08:00</published><updated>2020-04-12T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/12/fenghuangling</id><content type="html" xml:base="http://localhost:4000/2020/04/12/fenghuangling.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1XdlJSwIsjA9i1_no1rxTIp3aDLhwUSLm?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;果然饲养一只Hayley最好的方式，就是带她出去玩，浪漫（既浪又慢&lt;/p&gt;
 

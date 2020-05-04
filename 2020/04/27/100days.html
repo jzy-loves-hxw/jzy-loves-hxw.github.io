@@ -18,7 +18,177 @@
 <script type="application/ld+json">
 {"headline":"100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天","dateModified":"2020-04-27T00:00:00+08:00","datePublished":"2020-04-27T00:00:00+08:00","url":"http://localhost:4000/2020/04/27/100days.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/04/27/100days.html"},"image":"http://localhost:4000/images/2020-04-27/profile.jpg","description":"Link to photos","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Love Stories between Jason Jia and Hayley Hu" /></head>
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Love Stories between Jason Jia and Hayley Hu" /><script type='text/javascript'>
+  /* global google */
+/* global MarkerClusterer */
+// eslint-disable-next-line no-unused-vars
+var jekyllMaps = (function() {
+  'use strict'
+  var clusterSettings = {}
+  var clusterReady = false
+  var mapReady = false
+  var options = {}
+  var data = []
+  var maps = []
+
+  return {
+    initializeMap: initializeMap,
+    initializeCluster: initializeCluster,
+    register: register
+  }
+
+  /**
+   * Setup Google Maps options and call renderer.
+   */
+  function initializeMap() {
+    options = {
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      center: new google.maps.LatLng(0, 0)
+    }
+    mapReady = true
+    render()
+  }
+
+  /**
+   * Register map data to be rendered once Google Maps API is loaded.
+   *
+   * @param string id
+   * @param Array locations
+   * @param Object settings
+   */
+  function register(id, locations, options) {
+    data.push({ id: id, locations: locations, options: options })
+    render()
+  }
+
+  /**
+   * Render maps data if Google Maps API is loaded.
+   */
+  function render() {
+    if (!mapReady) return
+
+    while (data.length > 0) {
+      var item = data.pop()
+      var bounds = new google.maps.LatLngBounds()
+      var mapOptions = Object.assign({}, options, item.options)
+      var map = new google.maps.Map(
+        document.getElementById(item.id),
+        mapOptions
+      )
+      var infoWindow = new google.maps.InfoWindow()
+      var markers = item.locations.map(createMarker)
+
+      map.fitBounds(bounds)
+      google.maps.event.addListenerOnce(map, 'idle', function() {
+        if (this.customZoom) this.setZoom(this.customZoom)
+      })
+      if (mapOptions.useCluster) {
+        maps.push({ map: map, markers: markers })
+        processCluster()
+      }
+    }
+
+    function createMarker(location) {
+      var position = new google.maps.LatLng(
+        location.latitude,
+        location.longitude
+      )
+      bounds.extend(position)
+      if (!mapOptions.showMarker) return false
+
+      var marker = new google.maps.Marker({
+        position: position,
+        title: location.title,
+        image: location.image,
+        popup_html: location.popup_html,
+        icon: location.icon || mapOptions.markerIcon,
+        url: markerUrl(mapOptions.baseUrl, location.url),
+        url_text: location.url_text,
+        map: map
+      })
+      if (mapOptions.showMarkerPopup) marker.addListener('click', markerPopup)
+
+      return marker
+    }
+
+    function markerUrl(baseUrl, url) {
+      if (/^(https?|\/\/)/.test(url)) return url
+
+      return url.length > 0 ? baseUrl + url : ''
+    }
+
+    function markerPopup() {
+      var content = '<div class="map-info-window"><h5>' + this.title + '</h5>'
+      if (this.popup_html.length > 0) {
+        content += this.popup_html
+      }
+      else {
+        var imageTag =
+          this.image.length > 0 &&
+          '<img src="' + this.image + '" alt="' + this.title + '"/>'
+        if (this.url.length > 0) {
+          var linkContent = imageTag || this.url_text || 'View'
+          content += '<a href="' + this.url + '">' + linkContent + '</a>'
+        } else if (imageTag) {
+          content += imageTag
+        }
+      }
+      content += '</div>'
+      infoWindow.setContent(content)
+      infoWindow.open(map, this)
+    }
+  }
+
+  function initializeCluster(settings) {
+    clusterReady = true
+    clusterSettings = settings || {}
+    processCluster()
+  }
+
+  function processCluster() {
+    if (!clusterReady) return
+
+    while (maps.length > 0) {
+      var obj = maps.pop()
+      // eslint-disable-next-line no-new
+      new MarkerClusterer(obj.map, obj.markers, {
+        gridSize: clusterSettings.grid_size || 25,
+        imagePath:
+          'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'
+      })
+    }
+  }
+})()
+/* Object.assign polyfill */
+if (typeof Object.assign !== 'function') {
+  Object.assign = function(target) {
+    'use strict'
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object')
+    }
+
+    target = Object(target)
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index]
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key]
+          }
+        }
+      }
+    }
+    return target
+  }
+}
+
+</script>
+<script async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDQP0HvzRE9eSgZDliUmbI8oGII-tMAfdo&callback=jekyllMaps.initializeMap'></script>
+
+<script async defer src='https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer.js'
+        onload='jekyllMaps.initializeCluster({})'></script>
+
+</head>
 <body><header class="site-header" role="banner">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Love Stories between Jason Jia and Hayley Hu</a><nav class="site-nav">
@@ -46,13 +216,62 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p><a href="https://drive.google.com/drive/folders/1dES9EQUIZt0HUb5Z2xWuuKPtt_NuomhA?usp=sharing">Link to photos</a></p>
+    <p><a href="https://drive.google.com/drive/folders/11tiLJTG2z-3287N1mOpai_t85t6nTnny?usp=sharing">Link to photos</a></p>
 
-<h4 id="今天的故事太多也太甜啦接下来几天慢慢写"><span style="color:blue">今天的故事太多也太甜啦，接下来几天慢慢写～</span></h4>
-
-<p>来让小可爱挑一下，Jason的感情发展曲线是下面的哪一个呢</p>
+<p>Jason：在post的最前面，先让我的小可爱Hayley挑一下，我的感情发展曲线是下面的哪一个呢～</p>
 
 <p align="center"><img src="../../../images/2020-04-27/problem.jpeg" width="500" /></p>
+
+<p>今天的故事太多也太甜啦，我们在一起，哪里都很浪漫～</p>
+
+<p>在下面的地图上mark一下我们一天的行程⬇️</p>
+<div id="8c443c5c-b3df-4c36-846a-34a5d89c7ea3" style="width:600px;height:400px;"></div>
+<script type="text/javascript">
+  jekyllMaps.register(
+    '8c443c5c-b3df-4c36-846a-34a5d89c7ea3',
+    [{"latitude":39.974278,"longitude":116.312552,"title":"Noon: 人大附中","icon":null,"url":"#人大附中","url_text":null,"image":"../../../images/2020-04-27/rdfz.jpg","popup_html":""},{"latitude":39.965835,"longitude":116.323512,"title":"Afternoon: 微笑时刻","icon":null,"url":"#微笑时刻","url_text":null,"image":"../../../images/2020-04-27/smile-time.jpg","popup_html":""},{"latitude":39.992851,"longitude":116.339663,"title":"Dinner time: 五道口","icon":null,"url":"#五道口","url_text":null,"image":"../../../images/2020-04-27/wudaokou.jpg","popup_html":""},{"latitude":39.980248,"longitude":116.314183,"title":"Evening: 食宝街","icon":null,"url":"#食宝街","url_text":null,"image":"","popup_html":""}],
+    {"baseUrl":"","useCluster":false,"showMarker":true,"showMarkerPopup":true,"markerIcon":null}
+  );
+</script>
+
+<p><br /></p>
+
+<h3 id="人大附中">人大附中</h3>
+<p>吃完午饭来到人大附中，我们在高三开学的第一天来到RDFZ的门口。都穿上校服，让Hayley带着Jason重新 感受了一下高中谈恋爱的生活～</p>
+
+<p>Jason：收到小可爱的100天礼物：获奖的横幅，超级爱你。这样我既穿着校服谈恋爱，也收到啦获奖后的横幅，高中生活顿时感觉圆满啦❤️</p>
+<p align="center"><img src="../../../images/2020-04-27/rdfz1.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/rdfz2.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/rdfz3.jpg" width="500" /></p>
+
+<h3 id="微笑时刻">微笑时刻</h3>
+<p>不多说啦，直接摆上图就是啦，顺便Jason要狠狠表扬一下他的小可爱的p图水平～</p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-1.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-2.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-3.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-4.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-5.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-6.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-7.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-8.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-9.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-10.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/smile-time-11.jpg" width="500" /></p>
+
+<h3 id="五道口">五道口</h3>
+<p>晚上我们来到五道口的局气餐馆吃晚饭，看到有意思的盘子便留下了下面的照片～</p>
+
+<p>Hayley还说这个盘子上写的怎么这么符合hhh（Jason也莫名觉得有道理）</p>
+
+<p align="center"><img src="../../../images/2020-04-27/wudaokou1.jpg" width="500" /></p>
+<p align="center"><img src="../../../images/2020-04-27/wudaokou2.jpg" width="500" /></p>
+
+<h3 id="食宝街">食宝街</h3>
+<p>晚上我们来到食宝街的上方，Hayley完成了自由人登山队培训的第一次训练</p>
+
+<p>由于没有当晚的照片，就用第二天”小可爱’s redemption”来当作配图吧（Jason想说，他的小可爱Hayley真是太可爱啦）</p>
+<p align="center"><img src="../../../images/2020-04-27/shibaojie.jpg" width="500" /></p>
+
 
   </div><a class="u-url" href="/2020/04/27/100days.html" hidden></a>
 </article>
