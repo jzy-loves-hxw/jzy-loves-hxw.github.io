@@ -1,174 +1,4 @@
-<script type='text/javascript'>
-  /* global google */
-/* global MarkerClusterer */
-// eslint-disable-next-line no-unused-vars
-var jekyllMaps = (function() {
-  'use strict'
-  var clusterSettings = {}
-  var clusterReady = false
-  var mapReady = false
-  var options = {}
-  var data = []
-  var maps = []
-
-  return {
-    initializeMap: initializeMap,
-    initializeCluster: initializeCluster,
-    register: register
-  }
-
-  /**
-   * Setup Google Maps options and call renderer.
-   */
-  function initializeMap() {
-    options = {
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      center: new google.maps.LatLng(0, 0)
-    }
-    mapReady = true
-    render()
-  }
-
-  /**
-   * Register map data to be rendered once Google Maps API is loaded.
-   *
-   * @param string id
-   * @param Array locations
-   * @param Object settings
-   */
-  function register(id, locations, options) {
-    data.push({ id: id, locations: locations, options: options })
-    render()
-  }
-
-  /**
-   * Render maps data if Google Maps API is loaded.
-   */
-  function render() {
-    if (!mapReady) return
-
-    while (data.length > 0) {
-      var item = data.pop()
-      var bounds = new google.maps.LatLngBounds()
-      var mapOptions = Object.assign({}, options, item.options)
-      var map = new google.maps.Map(
-        document.getElementById(item.id),
-        mapOptions
-      )
-      var infoWindow = new google.maps.InfoWindow()
-      var markers = item.locations.map(createMarker)
-
-      map.fitBounds(bounds)
-      google.maps.event.addListenerOnce(map, 'idle', function() {
-        if (this.customZoom) this.setZoom(this.customZoom)
-      })
-      if (mapOptions.useCluster) {
-        maps.push({ map: map, markers: markers })
-        processCluster()
-      }
-    }
-
-    function createMarker(location) {
-      var position = new google.maps.LatLng(
-        location.latitude,
-        location.longitude
-      )
-      bounds.extend(position)
-      if (!mapOptions.showMarker) return false
-
-      var marker = new google.maps.Marker({
-        position: position,
-        title: location.title,
-        image: location.image,
-        popup_html: location.popup_html,
-        icon: location.icon || mapOptions.markerIcon,
-        url: markerUrl(mapOptions.baseUrl, location.url),
-        url_text: location.url_text,
-        map: map
-      })
-      if (mapOptions.showMarkerPopup) marker.addListener('click', markerPopup)
-
-      return marker
-    }
-
-    function markerUrl(baseUrl, url) {
-      if (/^(https?|\/\/)/.test(url)) return url
-
-      return url.length > 0 ? baseUrl + url : ''
-    }
-
-    function markerPopup() {
-      var content = '<div class="map-info-window"><h5>' + this.title + '</h5>'
-      if (this.popup_html.length > 0) {
-        content += this.popup_html
-      }
-      else {
-        var imageTag =
-          this.image.length > 0 &&
-          '<img src="' + this.image + '" alt="' + this.title + '"/>'
-        if (this.url.length > 0) {
-          var linkContent = imageTag || this.url_text || 'View'
-          content += '<a href="' + this.url + '">' + linkContent + '</a>'
-        } else if (imageTag) {
-          content += imageTag
-        }
-      }
-      content += '</div>'
-      infoWindow.setContent(content)
-      infoWindow.open(map, this)
-    }
-  }
-
-  function initializeCluster(settings) {
-    clusterReady = true
-    clusterSettings = settings || {}
-    processCluster()
-  }
-
-  function processCluster() {
-    if (!clusterReady) return
-
-    while (maps.length > 0) {
-      var obj = maps.pop()
-      // eslint-disable-next-line no-new
-      new MarkerClusterer(obj.map, obj.markers, {
-        gridSize: clusterSettings.grid_size || 25,
-        imagePath:
-          'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'
-      })
-    }
-  }
-})()
-/* Object.assign polyfill */
-if (typeof Object.assign !== 'function') {
-  Object.assign = function(target) {
-    'use strict'
-    if (target == null) {
-      throw new TypeError('Cannot convert undefined or null to object')
-    }
-
-    target = Object(target)
-    for (var index = 1; index < arguments.length; index++) {
-      var source = arguments[index]
-      if (source != null) {
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key]
-          }
-        }
-      }
-    }
-    return target
-  }
-}
-
-</script>
-<script async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDQP0HvzRE9eSgZDliUmbI8oGII-tMAfdo&callback=jekyllMaps.initializeMap'></script>
-
-<script async defer src='https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/src/markerclusterer.js'
-        onload='jekyllMaps.initializeCluster({})'></script>
-
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-02-05T01:48:23+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Love Stories between Jason Jia and Hayley Hu</title><subtitle>To mark our stories, moments and memories.</subtitle><entry><title type="html">故宫之行——远行与归来</title><link href="http://localhost:4000/2021/02/04/gugong.html" rel="alternate" type="text/html" title="故宫之行——远行与归来" /><published>2021-02-04T00:00:00+08:00</published><updated>2021-02-04T00:00:00+08:00</updated><id>http://localhost:4000/2021/02/04/gugong</id><content type="html" xml:base="http://localhost:4000/2021/02/04/gugong.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1ItIpfMAIcvxd7X_cwHCMp78lmQ43JbFR?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-02-05T03:19:45+08:00</updated><id>/feed.xml</id><title type="html">Love Stories between Jason Jia and Hayley Hu</title><subtitle>To mark our stories, moments and memories.</subtitle><entry><title type="html">故宫之行——远行与归来</title><link href="/2021/02/04/gugong.html" rel="alternate" type="text/html" title="故宫之行——远行与归来" /><published>2021-02-04T00:00:00+08:00</published><updated>2021-02-04T00:00:00+08:00</updated><id>/2021/02/04/gugong</id><content type="html" xml:base="/2021/02/04/gugong.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1ItIpfMAIcvxd7X_cwHCMp78lmQ43JbFR?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;
 
 &lt;div style=&quot;text-indent:2em&quot;&gt;
 &lt;p&gt;👣&lt;/p&gt;
@@ -178,23 +8,61 @@ if (typeof Object.assign !== 'function') {
 &lt;p&gt;👣&lt;/p&gt;
 &lt;/div&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/1.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/2.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/3.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/4.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/5.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/6.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/7.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/8.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/8.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/9.JPG&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to Photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2021-02-04/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2021-02-04/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">小可爱的老公和大可爱的老婆的第一组毕业照～</title><link href="http://localhost:4000/2020/07/04/biye.html" rel="alternate" type="text/html" title="小可爱的老公和大可爱的老婆的第一组毕业照～" /><published>2020-07-04T00:00:00+08:00</published><updated>2020-07-04T00:00:00+08:00</updated><id>http://localhost:4000/2020/07/04/biye</id><content type="html" xml:base="http://localhost:4000/2020/07/04/biye.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/16zWEWD0S7WbUOdLPdWsR96JwVC2RcBmL?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2021-02-04/9.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to Photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2021-02-04/profile.jpg" /><media:content medium="image" url="/images/2021-02-04/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">赤峰之行</title><link href="/2020/12/17/chifeng.html" rel="alternate" type="text/html" title="赤峰之行" /><published>2020-12-17T00:00:00+08:00</published><updated>2020-12-17T00:00:00+08:00</updated><id>/2020/12/17/chifeng</id><content type="html" xml:base="/2020/12/17/chifeng.html">&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-12-17/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-12-17/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-12-17/profile.jpg" /><media:content medium="image" url="/images/2020-12-17/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">赤壁丹霞之行</title><link href="/2020/12/12/chibidanxia.html" rel="alternate" type="text/html" title="赤壁丹霞之行" /><published>2020-12-12T00:00:00+08:00</published><updated>2020-12-12T00:00:00+08:00</updated><id>/2020/12/12/chibidanxia</id><content type="html" xml:base="/2020/12/12/chibidanxia.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1Q_lo6oWL97jdgKGaV9oHtk2j_3m-4zPF?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to Photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-12-12/profile.jpg" /><media:content medium="image" url="/images/2020-12-12/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">箭扣长城之行</title><link href="/2020/12/06/jiankou.html" rel="alternate" type="text/html" title="箭扣长城之行" /><published>2020-12-06T00:00:00+08:00</published><updated>2020-12-06T00:00:00+08:00</updated><id>/2020/12/06/jiankou</id><content type="html" xml:base="/2020/12/06/jiankou.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1urLnYILQ2_d0nOHo6zGkxHMT1ATwSHmL?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to Photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-12-06/profile.jpg" /><media:content medium="image" url="/images/2020-12-06/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">深圳之行</title><link href="/2020/10/25/shenzhen.html" rel="alternate" type="text/html" title="深圳之行" /><published>2020-10-25T00:00:00+08:00</published><updated>2020-10-25T00:00:00+08:00</updated><id>/2020/10/25/shenzhen</id><content type="html" xml:base="/2020/10/25/shenzhen.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1Cn13AXfHR5TAwtW42vQCSZT_6t9wEarA?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-25/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-25/2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-25/3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-25/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to Photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-10-25/profile.jpg" /><media:content medium="image" url="/images/2020-10-25/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">广州之行</title><link href="/2020/10/23/guangzhou.html" rel="alternate" type="text/html" title="广州之行" /><published>2020-10-23T00:00:00+08:00</published><updated>2020-10-23T00:00:00+08:00</updated><id>/2020/10/23/guangzhou</id><content type="html" xml:base="/2020/10/23/guangzhou.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1Cn13AXfHR5TAwtW42vQCSZT_6t9wEarA?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;公儿和婆儿的第一场南方“避寒”之行，打卡了长隆欢乐世界、白云山、广州塔和Party Pier。Party Pier非常的nice。&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-23/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-23/5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-23/3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-23/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-23/2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-10-23/6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-10-23/profile.jpg" /><media:content medium="image" url="/images/2020-10-23/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">清华舞会——公儿和婆儿的第二次舞会</title><link href="/2020/09/26/wuhui-tsinghua.html" rel="alternate" type="text/html" title="清华舞会——公儿和婆儿的第二次舞会" /><published>2020-09-26T00:00:00+08:00</published><updated>2020-09-26T00:00:00+08:00</updated><id>/2020/09/26/wuhui-tsinghua</id><content type="html" xml:base="/2020/09/26/wuhui-tsinghua.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1cjEpKc6-PM7Utvdd3XbuwyWobfpsUb4q?usp=sharing&quot;&gt;Link to Photos&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;✨&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-09-26/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-09-26/2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-09-26/3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-09-26/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-09-26/5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-09-26/6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to Photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-09-26/profile.jpg" /><media:content medium="image" url="/images/2020-09-26/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html"></title><link href="/2020/07/04/anaya.html" rel="alternate" type="text/html" title="" /><published>2020-07-04T00:00:00+08:00</published><updated>2020-07-04T00:00:00+08:00</updated><id>/2020/07/04/anaya</id><content type="html" xml:base="/2020/07/04/anaya.html">&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-07-04/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-07-04/profile.jpg" /><media:content medium="image" url="/images/2020-07-04/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">小可爱的老公和大可爱的老婆的第一组毕业照～</title><link href="/2020/07/04/biye.html" rel="alternate" type="text/html" title="小可爱的老公和大可爱的老婆的第一组毕业照～" /><published>2020-07-04T00:00:00+08:00</published><updated>2020-07-04T00:00:00+08:00</updated><id>/2020/07/04/biye</id><content type="html" xml:base="/2020/07/04/biye.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/16zWEWD0S7WbUOdLPdWsR96JwVC2RcBmL?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-07-04/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
 
@@ -206,79 +74,6 @@ if (typeof Object.assign !== 'function') {
 
 &lt;p&gt;小可爱的老公“端庄优雅”的北大西门照⬇️&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-07-04/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-07-04/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-07-04/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html"></title><link href="http://localhost:4000/2020/07/04/anaya.html" rel="alternate" type="text/html" title="" /><published>2020-07-04T00:00:00+08:00</published><updated>2020-07-04T00:00:00+08:00</updated><id>http://localhost:4000/2020/07/04/anaya</id><content type="html" xml:base="http://localhost:4000/2020/07/04/anaya.html">&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-07-04/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-07-04/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-07-04/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">十渡之行</title><link href="http://localhost:4000/2020/06/26/shidu.html" rel="alternate" type="text/html" title="十渡之行" /><published>2020-06-26T00:00:00+08:00</published><updated>2020-06-26T00:00:00+08:00</updated><id>http://localhost:4000/2020/06/26/shidu</id><content type="html" xml:base="http://localhost:4000/2020/06/26/shidu.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1ENHnF9MHyUA3Cnpso-nHh68KI7J4tr1e?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-07-04/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-07-04/profile.jpg" /><media:content medium="image" url="/images/2020-07-04/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">十渡之行</title><link href="/2020/06/26/shidu.html" rel="alternate" type="text/html" title="十渡之行" /><published>2020-06-26T00:00:00+08:00</published><updated>2020-06-26T00:00:00+08:00</updated><id>/2020/06/26/shidu</id><content type="html" xml:base="/2020/06/26/shidu.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1ENHnF9MHyUA3Cnpso-nHh68KI7J4tr1e?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-06-26/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-06-26/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-06-26/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">我们的结婚照照😘</title><link href="http://localhost:4000/2020/06/10/jiehunzhao.html" rel="alternate" type="text/html" title="我们的结婚照照😘" /><published>2020-06-10T00:00:00+08:00</published><updated>2020-06-10T00:00:00+08:00</updated><id>http://localhost:4000/2020/06/10/jiehunzhao</id><content type="html" xml:base="http://localhost:4000/2020/06/10/jiehunzhao.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1eoVULKwIOJoFLm8oePSoc__48enf_x-5?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-06-21/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-06-21/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-06-21/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">凤凰岭野攀 + 在大可爱的生日做蛋糕</title><link href="http://localhost:4000/2020/06/10/yepan.html" rel="alternate" type="text/html" title="凤凰岭野攀 + 在大可爱的生日做蛋糕" /><published>2020-06-10T00:00:00+08:00</published><updated>2020-06-10T00:00:00+08:00</updated><id>http://localhost:4000/2020/06/10/yepan</id><content type="html" xml:base="http://localhost:4000/2020/06/10/yepan.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1ahHLrdzz22-KlhKXQxRDSBhEFIcen77B?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-06-10/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;懒.jpg&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-06-10/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-06-10/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">5.30—百花山 &amp;amp; 白草畔</title><link href="http://localhost:4000/2020/05/30/baihuashan.html" rel="alternate" type="text/html" title="5.30---百花山 &amp; 白草畔" /><published>2020-05-30T00:00:00+08:00</published><updated>2020-05-30T00:00:00+08:00</updated><id>http://localhost:4000/2020/05/30/baihuashan</id><content type="html" xml:base="http://localhost:4000/2020/05/30/baihuashan.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1XV5mcz_3C4r3oJrmNVzoGm5s2tF2_PUk?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-05-30/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;懒.jpg&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-05-30/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-05-30/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">520 —— Two Days after Our Engagement</title><link href="http://localhost:4000/2020/05/20/520.html" rel="alternate" type="text/html" title="520 —— Two Days after Our Engagement" /><published>2020-05-20T00:00:00+08:00</published><updated>2020-05-20T00:00:00+08:00</updated><id>http://localhost:4000/2020/05/20/520</id><content type="html" xml:base="http://localhost:4000/2020/05/20/520.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1yqofG-ht-HhNuM9KQaWwfFw9I1KDgTx9?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;一个浪漫的夜晚，从Jason亲手给小可爱Hayley戴上戒指开始～&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-05-20/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-05-20/2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-05-20/3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-05-20/4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-05-20/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-05-20/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">给Hayley小可爱过的第一个母亲节——黄草梁徒步</title><link href="http://localhost:4000/2020/05/10/huangcaoliang.html" rel="alternate" type="text/html" title="给Hayley小可爱过的第一个母亲节——黄草梁徒步" /><published>2020-05-10T00:00:00+08:00</published><updated>2020-05-10T00:00:00+08:00</updated><id>http://localhost:4000/2020/05/10/huangcaoliang</id><content type="html" xml:base="http://localhost:4000/2020/05/10/huangcaoliang.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1JuBV61xm3lkA7ERduQJM0eFhq7Q9XHYN?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-05-10/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-05-10/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-05-10/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天</title><link href="http://localhost:4000/2020/04/27/100days.html" rel="alternate" type="text/html" title="100 Days Anniversary ❤️ —— 没见面的69天 vs 见上面的31天" /><published>2020-04-27T00:00:00+08:00</published><updated>2020-04-27T00:00:00+08:00</updated><id>http://localhost:4000/2020/04/27/100days</id><content type="html" xml:base="http://localhost:4000/2020/04/27/100days.html">&lt;p&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/11tiLJTG2z-3287N1mOpai_t85t6nTnny?usp=sharing&quot;&gt;Link to photos&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Jason：在post的最前面，先让我的小可爱Hayley挑一下，我的感情发展曲线是下面的哪一个呢～&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/problem.jpeg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;今天的故事太多也太甜啦，我们在一起，哪里都很浪漫～&lt;/p&gt;
-
-&lt;p&gt;在下面的地图上mark一下我们一天的行程⬇️&lt;/p&gt;
-&lt;div id=&quot;fec1b607-fde4-48ec-b4d7-d5d9b0e3e8bf&quot; style=&quot;width:600px;height:400px;&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-  jekyllMaps.register(
-    'fec1b607-fde4-48ec-b4d7-d5d9b0e3e8bf',
-    [{&quot;latitude&quot;:39.974278,&quot;longitude&quot;:116.312552,&quot;title&quot;:&quot;Noon: 人大附中&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#人大附中&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;../../../images/2020-04-27/rdfz.jpg&quot;,&quot;popup_html&quot;:&quot;&quot;},{&quot;latitude&quot;:39.965835,&quot;longitude&quot;:116.323512,&quot;title&quot;:&quot;Afternoon: 微笑时刻&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#微笑时刻&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;../../../images/2020-04-27/smile-time.jpg&quot;,&quot;popup_html&quot;:&quot;&quot;},{&quot;latitude&quot;:39.992851,&quot;longitude&quot;:116.339663,&quot;title&quot;:&quot;Dinner time: 五道口&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#五道口&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;../../../images/2020-04-27/wudaokou.jpg&quot;,&quot;popup_html&quot;:&quot;&quot;},{&quot;latitude&quot;:39.980248,&quot;longitude&quot;:116.314183,&quot;title&quot;:&quot;Evening: 食宝街&quot;,&quot;icon&quot;:null,&quot;url&quot;:&quot;#食宝街&quot;,&quot;url_text&quot;:null,&quot;image&quot;:&quot;&quot;,&quot;popup_html&quot;:&quot;&quot;}],
-    {&quot;baseUrl&quot;:&quot;&quot;,&quot;useCluster&quot;:false,&quot;showMarker&quot;:true,&quot;showMarkerPopup&quot;:true,&quot;markerIcon&quot;:null}
-  );
-&lt;/script&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;人大附中&quot;&gt;人大附中&lt;/h3&gt;
-&lt;p&gt;吃完午饭来到人大附中，我们在高三开学的第一天来到RDFZ的门口。都穿上校服，让Hayley带着Jason重新 感受了一下高中谈恋爱的生活～&lt;/p&gt;
-
-&lt;p&gt;Jason：收到小可爱的100天礼物：获奖的横幅，超级爱你。这样我既穿着校服谈恋爱，也收到啦获奖后的横幅，高中生活顿时感觉圆满啦❤️&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/rdfz1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/rdfz2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/rdfz3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;微笑时刻&quot;&gt;微笑时刻&lt;/h3&gt;
-&lt;p&gt;不多说啦，直接摆上图就是啦，顺便Jason要狠狠表扬一下他的小可爱的p图水平～&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-3.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-4.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-5.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-6.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-7.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-8.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-9.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-10.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/smile-time-11.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;五道口&quot;&gt;五道口&lt;/h3&gt;
-&lt;p&gt;晚上我们来到五道口的局气餐馆吃晚饭，看到有意思的盘子便留下了下面的照片～&lt;/p&gt;
-
-&lt;p&gt;Hayley还说这个盘子上写的怎么这么符合hhh（Jason也莫名觉得有道理）&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/wudaokou1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/wudaokou2.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;食宝街&quot;&gt;食宝街&lt;/h3&gt;
-&lt;p&gt;晚上我们来到食宝街的上方，Hayley完成了自由人登山队培训的第一次训练&lt;/p&gt;
-
-&lt;p&gt;由于没有当晚的照片，就用第二天”小可爱’s redemption”来当作配图吧（Jason想说，他的小可爱Hayley真是太可爱啦）&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-04-27/shibaojie.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/2020-04-27/profile.jpg" /><media:content medium="image" url="http://localhost:4000/images/2020-04-27/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;../../../images/2020-06-26/1.jpg&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Link to photos</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/2020-06-26/profile.jpg" /><media:content medium="image" url="/images/2020-06-26/profile.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
